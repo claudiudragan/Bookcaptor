@@ -2,8 +2,7 @@ from collections import OrderedDict
 import numpy
 import matplotlib.mlab as mlab
 import matplotlib.pyplot as plt
-from os import makedirs, linesep
-import errno
+from os import linesep
 import csv
 import time
 
@@ -51,22 +50,9 @@ class DTM:
 
         return matrix, words
 
-    def make_histogram(self, doc_index, top=10):
-        d = dict(zip(self.matrix[doc_index], self.words))
-        d = OrderedDict(sorted(d.items(), reverse=True))
-        values = list(d.values())
-        keys = list(d.keys())
-
-        plt.bar(values[:top], keys[:top])
-        plt.show()
-
     def dtm_to_file(self, name=None):
         if name is None:
             name = self.name
-        try:
-            makedirs("res/data/results/")
-        except FileExistsError:
-            pass
 
         with open("res/data/results/{0}_matrix.csv".format(name), "w+", encoding="utf-8") as w:
             writer = csv.writer(w, delimiter=",")

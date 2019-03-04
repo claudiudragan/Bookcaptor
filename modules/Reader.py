@@ -1,9 +1,15 @@
 from string import punctuation
 from .PorterStemmer import PorterStemmer
 import time
+from os import makedirs
+import errno
 
 class Reader:
     def __init__(self, rfile, log=False, keep_raw=False):
+        try:
+            makedirs("res/data/results/")
+        except FileExistsError:
+            pass
         self.log = log
         self.stopwords = self.load_stopwords()
         self.stemmer = PorterStemmer()
