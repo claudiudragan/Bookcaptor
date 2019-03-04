@@ -2,7 +2,7 @@
 **Bookcaptor** is a text mining and analysis written in Python 3.6 which aims to be a tool for reading text files and extracting various statistics from them.
 Currently only supports *.txt* files, with support for more filetypes to be implemented in the future along with support for more complex output file types (ie. PDFs).
 
-##### Twitter
+### Twitter
 Before using the twitter functionality you must also install *tweepy* using:
 ```
 python -m pip install tweepy
@@ -22,13 +22,13 @@ python getTweet.py
 ```
 Yes, it's a bit unprofessional. I'll clean it up later.
 
-##### Dependencies
+### Dependencies
 Bookcaptor has been tested on Python 3.6 and requires only *matplotlib* at the moment which can be installed using:
 ```
 python -m pip install matplotlib
 ```
 
-##### Bibliography
+### Bibliography
 ```
 Lexicon used for sentiment analysis: http://mpqa.cs.pitt.edu/lexicons/subj_lexicon/
 
