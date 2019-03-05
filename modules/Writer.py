@@ -4,10 +4,15 @@ import matplotlib.mlab as mlab
 import matplotlib.pyplot as plt
 import matplotlib
 from matplotlib.backends.backend_pdf import PdfPages
-from PyPDF2 import PdfFileWriter, PdfFileReader
+from PyPDF2 import PdfFileWriter, PdfFileReader, PdfFileMerger
+from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer
+from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
+from reportlab.lib.enums import TA_JUSTIFY
+from reportlab.lib.pagesizes import letter
+from reportlab.lib.units import inch
 
 class Writer:
-    def __init__(self, DocumentTermMatrix, log=False):
+    def __init__(self, DocumentTermMatrix, log=False, name="default"):
         font = {
             'family' : 'Arial',
             'weight' : 'bold',
@@ -18,6 +23,9 @@ class Writer:
         
         self.DTM = DocumentTermMatrix
         self.log = log
+        self.name = name
+
+        self.create_pdf()
 
     def make_histogram(self, doc_index, top=10):
         d = self.create_ordered(doc_index)
@@ -27,19 +35,21 @@ class Writer:
         plt.bar(values[:top], keys[:top])
         plt.show()
 
-    def create_pdf(self, name=None):
-        if name is None:
-            name = "default"
-        
-        with open("res/data/results/{0}.pdf".format(name), "wb+") as f:
-            pdfw = PdfFileWriter()
-            pdfw.addBlankPage(8.3, 11.7)
-            pdfw.write(f)
+    def create_pdf(self):
+        doc = SimpleDocTemplate("{0}.pdf".format(self.name), pagesize=letter, rightMargin=72,leftMargin=72,
+              topMargin=72,bottomMargin=18)
 
-    def histogram_to_pdf(self, doc_index, top=10, name=None):
-        if name is None:
-            name = "default"
+        styles = getSampleStyleSheet()     
+        styles.add(ParagraphStyle(name="Justify", alignment=TA_JUSTIFY)) 
+        Story = []
+        text = '''
+                    <title>{0} Analysis Results<title><br/>
+                '''.format(self.name)
 
+        Story.append(Paragraph(text, styles["Normal"]))
+        doc.build(Story)
+
+    def histogram_to_pdf(self, doc_index, top=10):
         d = self.create_ordered(doc_index)
         values = list(d.values())
         keys = list(d.keys())
@@ -50,10 +60,16 @@ class Writer:
         plt.bar(values[:top], keys[:top])
         plt.title("Histogram of the {0} most common words".format(top))
  
-        fig.savefig("res/data/results/{0}.pdf".format(name), bbox_inches="tight")
+        fig.savefig("res/data/results/{0}_hist.pdf".format(self.name), bbox_inches="tight")
 
         if self.log:
-            print("[LOG] Successfully saved histogram to {0}.pdf".format(name))
+            print("[LOG] Successfully saved histogram to {0}_hist.pdf".format(self.name))
+        
+        merger = PdfFileMerger()
+        merger.append("res/data/results/{0}.pdf".format(self.name))
+        merger.append("res/data/results/{0}_hist.pdf".format(self.name))
+        merger.write("res/data/results/{0}.pdf".format(self.name))    
+
     
     def create_ordered(self, doc_index):
         d = dict(zip(self.DTM.matrix[doc_index], self.DTM.words))
