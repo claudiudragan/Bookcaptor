@@ -5,7 +5,7 @@ from os import makedirs
 import errno
 
 class Reader:
-    def __init__(self, rfile, log=False, keep_raw=False):
+    def __init__(self, rfile, log=False, keep_raw=True):
         try:
             makedirs("res/data/results/")
         except FileExistsError:
@@ -28,7 +28,7 @@ class Reader:
             for word in content:
                 word = self.cleaner(word)
                 if word is not None:
-                    results.append(word)
+                        results.append(word)
 
             #results = [self.cleaner(word) for word in content if word not in self.stopwords]
             #results = [self.stemmer.stem(word, 0, len(word)-1) for word in results]
@@ -67,7 +67,7 @@ class Reader:
 
     def load_stopwords(self):
         words = []
-        with open("res/stop.txt", encoding="utf-8") as stops:
+        with open("res/data/stop.txt", encoding="utf-8") as stops:
             for line in stops:
                 line = line.strip()
                 words.append(line)

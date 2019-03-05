@@ -9,5 +9,5 @@ if __name__ == "__main__":
     dtmatrix = DTM(red, log=True)
     writer = Writer(dtmatrix, log=True, name="Jane_Eyre")
 
-    #writer.histogram_to_pdf(0)
+    writer.histogram_to_pdf(0)
     #dtmatrix.dtm_to_file(name="Jane_Eyre")
