@@ -1,8 +1,12 @@
 from string import punctuation
-from .PorterStemmer import PorterStemmer
 import time
 from os import makedirs
 import errno
+from os import listdir
+from os.path import isfile, join
+from multiprocessing import Pool
+import time
+
 
 class Reader:
     def __init__(self, rfile, log=False, keep_raw=True):
@@ -12,7 +16,6 @@ class Reader:
             pass
         self.log = log
         self.stopwords = self.load_stopwords()
-        self.stemmer = PorterStemmer()
         self.content, self.raw = self.load_content(rfile, keep_raw)
         self.name = rfile[rfile.rfind("/") + 1:rfile.rfind(".")]
         
@@ -29,14 +32,6 @@ class Reader:
                 word = self.cleaner(word)
                 if word is not None:
                         results.append(word)
-
-            #results = [self.cleaner(word) for word in content if word not in self.stopwords]
-            #results = [self.stemmer.stem(word, 0, len(word)-1) for word in results]
-            #results = [word for word in results if word not in self.stopwords]
-
-            #for item in results:
-            #    for punct in list(punctuation):
-            #        item = item.replace(punct, "")
 
             end = time.time()
             t = end - start
@@ -59,7 +54,6 @@ class Reader:
         for punct in list(punctuation):
             word = word.replace(punct, "")
         
-        #word = self.stemmer.stem(word, 0, len(word)-1)
         if word not in self.stopwords:
             return word
         else:
@@ -82,3 +76,25 @@ class Reader:
     
     def __repr__(self):
         return "<Reader class named: \"" + self.name + "\">"
+
+class BulkReader:
+    def __init__(self, ipPath):
+        self.inputPath = ipPath
+    
+    def read_one(self, book):
+        reader = (Reader(book, log=True))
+        return reader
+
+    def read_bulk(self):
+        books = [(self.inputPath + f) for f in listdir(self.inputPath) if isfile(join(self.inputPath, f))]
+        readers = []
+        pool = Pool(4)
+
+        begin = time.time()
+        readers = pool.map(self.read_one, books)
+        pool.close()
+        pool.join()
+        end = time.time()
+
+        print("[LOG] Read all input in {0:.2f}s".format(end-begin))
+        return readers

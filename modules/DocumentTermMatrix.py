@@ -22,13 +22,13 @@ class DTM:
 
         #TODO Optimize matrix creation!
         for doc in self.docs:  
-            freq = []
+            freq = {}
             for word in doc.content:
                 if word not in words:
                     words.append(word)
-                    freq.append(1)
+                    freq[word] = 1
                 else:
-                    freq[words.index(word)] += 1
+                    freq[word] += 1
             matrix.append(freq)
 
         #TODO Change padding method
