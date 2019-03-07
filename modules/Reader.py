@@ -54,10 +54,11 @@ class Reader:
         for punct in list(punctuation):
             word = word.replace(punct, "")
         
-        if word not in self.stopwords:
+        if word not in self.stopwords and not word == "":
             return word
         else:
             return None
+
 
     def load_stopwords(self):
         words = []
