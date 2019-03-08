@@ -4,10 +4,11 @@ Currently only supports *.txt* files, with support for more filetypes to be impl
 The output is given as a PDF file displaying a variety of statistics about the chosen documents (ie. books) which can be found in the *res/data/results/* folder.
 
 ### Dependencies
-Bookcaptor has been tested on Python 3.6 and requires *matplotlib*, *reportlab* and *PyPDF2* at the moment which can be installed using:
+Bookcaptor has been tested on Python 3.6 and requires *matplotlib*, *reportlab*, *NLTK*, and *PyPDF2* at the moment which can be installed using:
 ```
 python -m pip install matplotlib
 python -m pip install reportlab
+python -m pip install NLTK
 python -m pip install PyPDF2
 ```
 

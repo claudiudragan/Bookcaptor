@@ -8,7 +8,7 @@ from multiprocessing import Pool
 import time
 
 
-class Reader:
+class Book:
     def __init__(self, rfile, log=False, keep_raw=True):
         try:
             makedirs("res/data/results/")
@@ -47,11 +47,16 @@ class Reader:
     def cleaner(self, word):
         word = word.lower()
         word = word.strip()
+        quote = "«‹»›„‚“‟‘‛”’❛❜❟❝❞❮❯⹂〝〞〟＂‘"
+        puncts = list(punctuation) + list(quote)
 
-        if word[-2:] == "'s":
+        if "\'s" in word:
             word = word.replace("'s", "")
 
-        for punct in list(punctuation):
+        if "❜s" in word:
+            word = word.replace("❜s", "")
+
+        for punct in puncts:
             word = word.replace(punct, "")
         
         if word not in self.stopwords and not word == "":
@@ -65,12 +70,15 @@ class Reader:
         with open("res/data/stop.txt", encoding="utf-8") as stops:
             for line in stops:
                 line = line.strip()
-                words.append(line)
+                words.append(line.lower())
 
         return words
 
     def get_content(self):
         return self.content
+    
+    def get_name(self):
+        return str(self.name)
 
     def __str__(self):
         return self.name
@@ -79,11 +87,12 @@ class Reader:
         return "<Reader class named: \"" + self.name + "\">"
 
 class BulkReader:
-    def __init__(self, ipPath):
+    def __init__(self, ipPath, log=False):
         self.inputPath = ipPath
+        self.log = log
     
     def read_one(self, book):
-        reader = (Reader(book, log=True))
+        reader = (Book(book, self.log))
         return reader
 
     def read_bulk(self):
