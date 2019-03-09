@@ -24,6 +24,8 @@ class Book:
         start = time.time()
         with open(f, "r", encoding="utf-8") as text:
             txt = text.read()
+            txt = self.gutenberg_clean(txt)
+
             content = txt.replace("--", " ")
             content = content.split()
             results = []
@@ -43,6 +45,15 @@ class Book:
             else:
                 del txt
                 return results, None
+
+    def gutenberg_clean(self, txt):
+        begin = txt.find("START OF THIS PROJECT GUTENBERG EBOOK")
+        ending = txt.find("END OF THIS PROJECT GUTENBERG EBOOK")
+
+        if begin != -1 and ending != -1:
+            txt = txt[begin:ending]
+
+        return txt
 
     def cleaner(self, word):
         word = word.lower()

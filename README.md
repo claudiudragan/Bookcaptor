@@ -21,5 +21,5 @@ Stopword list: https://www.ranks.nl/stopwords
 Books used for data from: https://www.gutenberg.org/
 ```
 
-###Twitter
+### Twitter
 Currently the Twitter module only exists as a stub. Bookcaptor does not support convenient tweet analysis at the moment though getTweet.py can be used to grab a set of tweets using a certain keyword.

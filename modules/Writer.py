@@ -1,16 +1,14 @@
-from collections import OrderedDict
 import numpy
-import matplotlib.mlab as mlab
-import matplotlib.pyplot as plt
 import matplotlib
+import matplotlib.pyplot as plt
 from matplotlib.backends.backend_pdf import PdfPages
 from PyPDF2 import PdfFileWriter, PdfFileReader, PdfFileMerger
 from reportlab.pdfgen import canvas
 from reportlab.lib.pagesizes import letter
-from reportlab.lib.units import inch
-import io
 import time
 from os import remove
+from modules.Name import Name
+import textwrap
 
 class Writer:
     def __init__(self, DocumentTermMatrix, log=False, name="default"):
@@ -47,6 +45,7 @@ class Writer:
         beg = time.time()
         end = len(self.DTM.get_docs())
         pp = PdfPages("res/data/results/hists.pdf")
+
         for i in range(0, end):
             ax = self.make_histogram(i, top)
             pp.savefig(ax)
@@ -65,7 +64,56 @@ class Writer:
         self.clean_files()
 
         if self.log:
-            print("[LOG] Successfully printed PDF file to res/data/results/{0}_Output.pdf".format(self.name))
+            print("[LOG] Successfully histograms to res/data/results/{0}_Output.pdf".format(self.name))
+
+    def merge_results(self, character=False):
+        self.histograms_to_pdf()
+        start = time.time()
+        merger = PdfFileMerger()
+        merger.append("res/data/results/{0}_Output.pdf".format(self.name))
+
+        
+        if character:
+            PdfPath = "res/data/results/{0}_Char.pdf"
+            end = len(self.DTM.get_docs())
+            i = 2
+            for doc in range(0, end):
+                self.add_characters(doc)
+                merger.merge(doc + i, PdfPath.format(doc))
+                i += 2
+
+        merger.write("res/data/results/{0}_Final.pdf".format(self.name))
+        merger.close()
+
+        finish = time.time()
+        if self.log:
+            print("[LOG] Finished final PDF in {0:.2f}s".format(finish - start))
+
+    def add_characters(self, doc_index):
+        def characters_wrap(canv, string):
+            wrap = textwrap.wrap(string, width=90)
+            i = 33
+            for txt in wrap:
+                canv.drawString(30, self.size[1] - i, txt)
+                i += 12
+
+        book_name = self.DTM.get_doc(doc_index).name
+        names = Name(self.DTM.get_doc(doc_index), log=True)
+
+        title = "Characters in {0}: ".format(book_name).replace("_", " ")
+        can = canvas.Canvas("res/data/results/{0}_Char.pdf".format(doc_index), pagesize=letter)
+        
+        can.setFont("Helvetica-Bold", 11)
+        can.drawString(20, self.size[1] - 20, title)
+
+        can.setFont("Helvetica", 11)
+        chars = ", ".join([x[0].strip() for x in names.count_names()])
+        characters_wrap(can, chars)
+      
+        can.showPage()
+        can.save()
+
+        return can
 
     def clean_files(self):
         try:
