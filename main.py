@@ -2,7 +2,6 @@ from modules.Book import Book, BulkReader
 from modules.DocumentTermMatrix import DTM
 from modules.Writer import Writer
 from modules.Name import Name
-from collections import Counter
 
 if __name__ == "__main__":
     inputPath = "res/data/input/"
