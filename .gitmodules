@@ -1,3 +1,6 @@
 [submodule "xcaptor-tools"]
 	path = xcaptor-tools
 	url = https://github.com/claudiudragan/XCaptor-Tools
+[submodule "xcaptor_tools"]
+	path = xcaptor_tools
+	url = https://github.com/claudiudragan/XCaptor-Tools
