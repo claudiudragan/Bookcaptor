@@ -91,6 +91,9 @@ class Book:
     def get_name(self):
         return str(self.name)
 
+    def get_raw(self):
+        return self.raw
+
     def __str__(self):
         return self.name
     
