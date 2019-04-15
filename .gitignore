@@ -3,3 +3,4 @@ res/tweets.txt
 res/data/results/
 modules/__pycache__/
 modules/*.pyc
+*.txt

@@ -4,3 +4,6 @@
 [submodule "xcaptor_tools"]
 	path = xcaptor_tools
 	url = https://github.com/claudiudragan/XCaptor-Tools
+[submodule "genrecaptor"]
+	path = genrecaptor
+	url = https://github.com/claudiudragan/Genrecaptor
